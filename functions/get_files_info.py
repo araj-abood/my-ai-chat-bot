@@ -1,4 +1,5 @@
 import os 
+from google.genai import types
 
 def get_files_info(working_directory, directory="."):
     try:
@@ -29,3 +30,25 @@ def get_files_info(working_directory, directory="."):
         return (file_info_message)
     except Exception as e:
         return f"Error {e}"
+
+
+schema_get_files_info = types.FunctionDeclaration(
+    name="get_files_info",
+    description=(
+        "DIRECTLY lists files and folders in a given directory. "
+        "Use this function ANYTIME the user requests to 'list', 'show', or 'view' directory contents. "
+        "This function accesses the file system directly — DO NOT generate or run Python code for this purpose."
+    ),
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description=(
+                    "The directory path to list, relative to the working directory. "
+                    "If omitted, defaults to listing the working directory."
+                ),
+            ),
+        },
+    ),
+)

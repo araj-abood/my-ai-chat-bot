@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 import sys
+from config import SYSTEM_PROMPT
+from call_functions import avaliable_functions
 
 def main():
     load_dotenv()
@@ -38,6 +40,7 @@ def main():
 
     messages = [types.Content(role="user", parts=[types.Part(text=user_prompt)])]
 
+
     generate_content(client, messages, is_verbose)
 
 
@@ -47,15 +50,20 @@ def main():
 def generate_content(client, messages, is_verbose):
     response = client.models.generate_content(
         model="gemini-2.0-flash-001", 
-        contents=messages
-    
+        contents=messages,
+        config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT, tools=[avaliable_functions])
     )
     if is_verbose:
         meta_data = response.usage_metadata
         print(f"Prompt tokens: {meta_data.prompt_token_count}")
         print(f"Response tokens: {meta_data.candidates_token_count}")
-    print("Response:")
-    print(response.text)
+        
+    if not response.function_calls:
+        return response.text
+
+    for function_call_part in response.function_calls:
+        print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+
 
 if __name__ == "__main__":
     main()

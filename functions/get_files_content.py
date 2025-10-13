@@ -1,5 +1,7 @@
 import os
 from config import MAX_CHARS
+from google.genai import types
+
 def get_file_content(working_directory, file_path):
     try:
         working_directory_abs_path = os.path.abspath(working_directory)
@@ -21,3 +23,22 @@ def get_file_content(working_directory, file_path):
     except Exception as e:
         return f'Error: File not found or is not a regular file: "{file_path}"'
 
+
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="return the file content as a string, up to 10000 characters",
+    parameters=types.Schema(
+       type=types.Type.OBJECT,
+       properties={
+            "working_directory": types.Schema(
+                type=types.Type.STRING,
+                description="The working directory that the file_path exist inside"
+            ),
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The file path to output the content of."
+            )
+       }
+    )
+)
