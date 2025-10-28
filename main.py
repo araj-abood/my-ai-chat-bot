@@ -6,6 +6,7 @@ from google.genai import types
 import sys
 from config import SYSTEM_PROMPT
 from call_functions import avaliable_functions
+from functions.call_function import call_function
 
 def main():
     load_dotenv()
@@ -57,12 +58,18 @@ def generate_content(client, messages, is_verbose):
         meta_data = response.usage_metadata
         print(f"Prompt tokens: {meta_data.prompt_token_count}")
         print(f"Response tokens: {meta_data.candidates_token_count}")
-        
+
     if not response.function_calls:
-        return response.text
+        print(response.text)
 
     for function_call_part in response.function_calls:
-        print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+        function_call_output = call_function(function_call_part, is_verbose)
+        if not function_call_output.parts[0].function_response.response:
+            raise Exception("Not response")
+        if is_verbose:
+            print(f"-> {function_call_output.parts[0].function_response.response}")
+
+        print (f"Calling function: {function_call_part.name}({function_call_part.args})")
 
 
 if __name__ == "__main__":
