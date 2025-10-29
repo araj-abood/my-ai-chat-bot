@@ -27,7 +27,7 @@ def get_files_content(working_directory, file_path):
 
 schema_get_file_content = types.FunctionDeclaration(
     name="get_file_content",
-    description="return the file content as a string, up to 10000 characters",
+    description="return the file content as a string, Use when user want to get, inspect, view a files content, up to 10000 characters",
     parameters=types.Schema(
        type=types.Type.OBJECT,
        properties={

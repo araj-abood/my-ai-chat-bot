@@ -17,9 +17,9 @@ def write_file(working_directory, file_path, content):
 schema_write_file = types.FunctionDeclaration(
     name="write_file",
         description=(
-            "Writes text content to a file. "
-            "Use ONLY when the user explicitly requests to 'save', 'create', or 'update' a file. "
-            "NEVER use this to list, explore, or inspect directories — use 'get_files_info' instead."
+            "Writes text content to a file."
+            "Use ONLY when the user explicitly requests to 'save', 'create', or 'update' a file."
+            "NEVER use this to list, explore,get , or inspect directories — use 'get_files_info' instead."
         ),
     parameters=types.Schema(
         type=types.Type.OBJECT,

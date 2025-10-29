@@ -30,7 +30,7 @@ def call_function(function_call_part, verbose=False):
             ],
         )
     
-    function_result = function_to_call(**function_call_part.args)
+    function_result = function_to_call("./calculator",**function_call_part.args)
     
     return types.Content(
     role="tool",

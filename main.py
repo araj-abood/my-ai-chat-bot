@@ -23,8 +23,9 @@ def main():
         if not arg.startswith("--"):
             prompt_list.append(arg)
 
+    print(prompt_list)
     # convert prompt list to string
-    user_prompt = " ".join(prompt_list)
+    user_prompt = " ".join(prompt_list[1:])
 
     if not user_prompt:
         print("No prompt provided")        
