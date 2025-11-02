@@ -19,8 +19,7 @@ def run_python_file(working_directory, file_path, args=[]):
 
     try:
         completed_process = subprocess.run(args=command, timeout=30, capture_output=True)
-
-        if len(completed_process.stdout) > 0:
+        if len(completed_process.stdout or completed_process.stderr) > 0:
             output =  f"STDOUT: {completed_process.stdout}\nSTDERR: {completed_process.stderr}"
             return output + f"\nProcess exited with code {completed_process.returncode}"
         else:

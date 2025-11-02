@@ -44,6 +44,8 @@ def main():
 
 
     generate_content(client, messages, is_verbose)
+    
+    exit(0)
 
 
 
@@ -68,7 +70,8 @@ def generate_content(client, messages, is_verbose):
         if not function_call_output.parts[0].function_response.response:
             raise Exception("Not response")
         if is_verbose:
-            print(f"-> {function_call_output.parts[0].function_response.response}")
+            print(f"\n{function_call_output.parts[0].function_response.response["result"]}")
+            return
 
         print (f"Calling function: {function_call_part.name}({function_call_part.args})")
 

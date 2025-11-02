@@ -23,8 +23,10 @@ def get_files_info(working_directory, directory="."):
         for item in contents:
             item_path = os.path.join(directory_absolute_path, item)
             size = os.path.getsize(item_path)
-            is_dir = os.path.isfile(item_path)
-            info = f"- {item}: file_size={size}, is_dir={is_dir}\n"
+            is_dir = os.path.isdir(item_path)
+            if is_dir:
+                continue
+            info = f"- '{item}'\n"
             file_info_message += info
 
         return (file_info_message)
