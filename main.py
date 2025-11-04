@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 import sys
-from config import SYSTEM_PROMPT
+from config import SYSTEM_PROMPT, MAX_ITERS
 from call_functions import avaliable_functions
 from functions.call_function import call_function
 
@@ -42,10 +42,24 @@ def main():
 
     messages = [types.Content(role="user", parts=[types.Part(text=user_prompt)])]
 
-
-    generate_content(client, messages, is_verbose)
+    iters = 0
     
-    exit(0)
+    while True:
+        iters += 1
+        if iters > MAX_ITERS:
+            print(f"Max iterations of ${MAX_ITERS}. Reached")
+            sys.exit(1)
+   
+        try:
+            final_response = generate_content(client, messages, is_verbose)
+            if final_response:
+                print("Final response:")
+                print(final_response)
+                break
+        except Exception as e:
+            print(f"Error in generate_content: {e}")
+            
+    
 
 
 
@@ -57,23 +71,35 @@ def generate_content(client, messages, is_verbose):
         contents=messages,
         config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT, tools=[avaliable_functions])
     )
+    
+    if response.candidates:
+        for candidate in response.candidates:
+            function_call_content = candidate.content
+            messages.append(function_call_content)
+            
+    
     if is_verbose:
         meta_data = response.usage_metadata
         print(f"Prompt tokens: {meta_data.prompt_token_count}")
         print(f"Response tokens: {meta_data.candidates_token_count}")
 
     if not response.function_calls:
-        print(response.text)
+        return response.text
 
+    function_response = []
     for function_call_part in response.function_calls:
         function_call_output = call_function(function_call_part, is_verbose)
-        if not function_call_output.parts[0].function_response.response:
-            raise Exception("Not response")
+        if not function_call_output.parts[0].function_response.response or not function_call_output.parts:
+            raise Exception("empty function call result")
         if is_verbose:
-            print(f"\n{function_call_output.parts[0].function_response.response["result"]}")
-            return
+            print(f"-> {function_call_output.parts[0].function_response.response}")
+        
+        function_response.append(function_call_output.parts[0])
 
-        print (f"Calling function: {function_call_part.name}({function_call_part.args})")
+    if not function_response:
+        raise Exception("no function responses generated, exiting.")
+
+    messages.append(types.Content(role="user", parts=function_response))
 
 
 if __name__ == "__main__":
