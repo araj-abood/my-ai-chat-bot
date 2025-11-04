@@ -2,7 +2,7 @@ from functions import write_file, get_files_content,get_files_info, run_python_f
 from google.genai import types
 
 function_strings_to_actual_functions = {
-    "get_files_content": get_files_content.get_files_content,
+    "get_file_content": get_files_content.get_file_content,
     "get_files_info": get_files_info.get_files_info,
     "run_python_file": run_python_file.run_python_file,
     "write_file": write_file.write_file
