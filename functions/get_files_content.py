@@ -2,7 +2,7 @@ import os
 from config import MAX_CHARS
 from google.genai import types
 
-def get_files_content(working_directory, file_path):
+def get_file_content(working_directory, file_path):
     try:
         working_directory_abs_path = os.path.abspath(working_directory)
         file_path_abs_path = os.path.abspath(os.path.join(working_directory_abs_path, file_path))
@@ -26,7 +26,7 @@ def get_files_content(working_directory, file_path):
 
 
 schema_get_file_content = types.FunctionDeclaration(
-    name="get_files_content",
+    name="get_file_content",
     description="return the file content as a string, Use when user want to get, inspect, view a files content, up to 10000 characters",
     parameters=types.Schema(
        type=types.Type.OBJECT,
